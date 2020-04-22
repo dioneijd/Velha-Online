@@ -1,0 +1,96 @@
+@import url('https://fonts.googleapis.com/css?family=Roboto:400,500&display=swap');
+
+
+html, body {
+    margin: 0;
+    padding: 0;
+}
+
+* {    
+    box-sizing: border-box;
+    font-family: roboto;
+}
+
+body {
+    height: 100%;
+}
+
+header {
+    width: 100%;
+    background-color: rgb(92, 43, 226);
+    color: white;
+}
+header div {
+    height: 70px;
+    max-width: 700px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+
+header div .playerName {
+    font-size: 20px;
+    font-weight: bold;
+}
+
+main {
+    height: 600px;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    justify-items: center;
+    align-items: center;
+}
+
+main .board {
+    height: 100%;
+    width: 100%;
+    max-width: 700px;
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    grid-template-rows: 1fr 1fr 1fr;
+    gap: 2px;
+
+    background-color:  rgb(92, 43, 226);    
+}
+
+main .board .cell {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 100px;
+    cursor: pointer;
+    background-color: white;
+}
+
+main .board .cell:hover {
+    background-color: rgb(212, 211, 211);
+}
+
+main .board .cell.winnerSeq {
+    background-color: rgb(92, 43, 226);    
+    color: white;
+}
+
+main div.console{
+    height: 50px;
+    width: 100%;
+    max-width: 700px;
+    margin-top: 20px;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+main div.console button {
+    height: 50px;
+    min-width: 200px;
+    max-width: 700px;
+    cursor: pointer;
+    border: 0;
+    border-radius: 5px;
+    background-color: rgb(92, 43, 226);
+    color: white;
+    font-size: 20px;
+}

@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="./style.css">
+    
+
+</head>
+<body>
+
+    <header>
+        <div>
+            <div id="player1" class="playerName"></div>
+            <div id="score1" class="score"></div>
+            <div class="score">x</div>
+            <div id="score2" class="score"></div>
+            <div id="player2" class="playerName"></div>
+        </div>
+    </header>
+
+    <main>
+
+        <div class="board">
+            <div id="cell_0" class="cell" onclick="MakeTurn(0)"></div>
+        </div>
+        <div class="message">
+            <h3></h3>
+        </div>
+        <div class="console">
+            <h3>Clique para iniciar uma nova partida >>></h3>
+            <button id="btnStartTurn" onclick="StartTurn()">INICIAR</button>            
+        </div>
+        
+    </main>
+
+
+
+    <!-- <script src="../../node_modules/socket.io-client/dist/socket.io.js"></script> -->
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="./script.js"></script>
+
+</body>
+</html>
