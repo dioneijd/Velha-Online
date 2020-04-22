@@ -1,12 +1,13 @@
-
 let game = {
     players: [
         {
+            socketId: '',
             name: 'dionei',
             score: 0,
             symbol: 'X',
         },
         {
+            socketId: '',
             name: 'manu',
             score: 0,
             symbol: 'O',
@@ -40,6 +41,11 @@ function StartTurn(){
 }
 
 
+function SetNewPlayer(player){
+    
+}
+
+
 
 
 function MakeTurn(id){
@@ -56,17 +62,6 @@ function MakeTurn(id){
 
 
 
-function RenderHeader(){
-    const player1 = document.querySelector('#player1')
-    const player2 = document.querySelector('#player2')
-    const score1 = document.querySelector('#score1')
-    const score2 = document.querySelector('#score2')
-
-    player1.innerText = game.players[0].name.toUpperCase()
-    player2.innerText = game.players[1].name.toUpperCase()
-    score1.innerText = game.players[0].score
-    score2.innerText = game.players[1].score    
-}
 
 
 function CheckWinningSeq(){
@@ -121,27 +116,27 @@ function RenderBoard(){
     }
 }
 
-function RenderWinnerSeq(seqId){
+// function RenderWinnerSeq(seqId){
 
-    const winSeq = winSequence[seqId]
+//     const winSeq = winSequence[seqId]
 
-    winSeq.forEach((cell) => {
-        const el = document.querySelector(`#cell_${cell}`)
-        el.classList.add("winnerSeq");
-    })
+//     winSeq.forEach((cell) => {
+//         const el = document.querySelector(`#cell_${cell}`)
+//         el.classList.add("winnerSeq");
+//     })
 
-}
+// }
 
-function ToggleButtonVisible(){
-    const btn = document.querySelector('#btnStartTurn')
+// function ToggleButtonVisible(){
+//     const btn = document.querySelector('#btnStartTurn')
 
-    btn.style.visibility = btn.style.visibility == 'hidden' ? 'none' : 'hidden'
-}
+//     btn.style.visibility = btn.style.visibility == 'hidden' ? 'none' : 'hidden'
+// }
 
-function SetConsoleMessage(msg){
-    const h3 = document.querySelector('main div.console h3')
-    h3.innerText = msg
-}
+// function SetConsoleMessage(msg){
+//     const h3 = document.querySelector('main div.console h3')
+//     h3.innerText = msg
+// }
 
 RenderHeader()
 RenderBoard()
@@ -149,11 +144,7 @@ SetNextPlayer()
 
 
 
-const socket = io()
 
 
-socket.on('testConnection', function(data){
-    console.log('TEST CONNECTION. Message received:', data )
-})
 
 
