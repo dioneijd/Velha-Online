@@ -19,48 +19,46 @@ let game = {
         score: 0,
         symbol: ''
     },
-    numberOfGames: 0,
+    numberOfTurns: 0,
     board: ['','','','','','','','',''],
-    gameOver: true
+    gameOver: true,
+    gameTied: false,
+    winnerSequence: []
 
 }
+
 
 const winSequence = [
     [0, 1, 2], [3, 4, 5], [6, 7, 8],
     [0, 3, 6], [1, 4, 7], [2, 5, 8],
     [0, 4, 8], [2, 4, 6]
 ]
-    
 
-function StartTurn(){
+
+function StartNewGameTurn(){
     game.board.fill('')
-    game.numberOfGames ++
+    game.winnerSequence = []
+    game.numberOfTurns ++
     game.gameOver = false
+    game.gameTied = false
     SetNextPlayer()
-    RenderBoard()
 }
-
-
-function SetNewPlayer(player){
-    
-}
-
-
 
 
 function MakeTurn(id){
     if (game.board[id] == '' && !game.gameOver) {
-
+        
         const player = game.turnPlayer        
         game.board[id] = player.symbol
 
-        RenderBoard()
         CheckWinningSeq()
-        SetNextPlayer()
+        CheckGameTied()
+        
+        if (!game.gameOver) {
+            SetNextPlayer()
+        }
     }
 }
-
-
 
 
 
@@ -74,29 +72,27 @@ function CheckWinningSeq(){
             game.board[winSequence[i][2]] == symbol
         ){
             game.gameOver = true
-            RenderWinnerSeq(i)
+            game.winnerSequence = winSequence[i]
             AddScore()
-            RenderHeader()
-            SetConsoleMessage('Clique para iniciar uma nova partida >>>')
         }
     }
 }
 
-// function WhoIsNextPlayer() {
-//     return game.turnPlayer.id == 0 ? 1 : 0
-// }
+function CheckGameTied(){
+    const emptyCell = game.board.find(cell => cell == '')
+
+    if (emptyCell != ''){
+        game.gameOver = true
+        game.gameTied = true
+    }
+}
+
 
 function SetNextPlayer(){
-    if (!game.gameOver) {
-        const nextPlayerId = game.turnPlayer.id == 0 ? 1 : 0
-        const nextPlayer = game.players[nextPlayerId]
+    const nextPlayerId = game.turnPlayer.id == 0 ? 1 : 0
+    const nextPlayer = game.players[nextPlayerId]
 
-        game.turnPlayer = {id: nextPlayerId, ...nextPlayer} 
-
-        
-        SetConsoleMessage(`${nextPlayer.name.toUpperCase()} é sua vez`)
-        ToggleButtonVisible()
-    }
+    game.turnPlayer = {id: nextPlayerId, ...nextPlayer} 
 }
 
 function AddScore(){
@@ -105,45 +101,12 @@ function AddScore(){
 }
 
 
-function RenderBoard(){
-    let content = '';        
-    const board = document.querySelector('main .board')
-    for (i in game.board){
-        content += '<div id="cell_' + i + '" class="cell" onclick="MakeTurn(' + i + ')">'+ game.board[i] +'</div>'
-    }
-    if (board){
-        document.querySelector('main .board').innerHTML = content
-    }
+
+module.exports = {
+    game,
+    StartNewGameTurn,
+    MakeTurn
 }
-
-// function RenderWinnerSeq(seqId){
-
-//     const winSeq = winSequence[seqId]
-
-//     winSeq.forEach((cell) => {
-//         const el = document.querySelector(`#cell_${cell}`)
-//         el.classList.add("winnerSeq");
-//     })
-
-// }
-
-// function ToggleButtonVisible(){
-//     const btn = document.querySelector('#btnStartTurn')
-
-//     btn.style.visibility = btn.style.visibility == 'hidden' ? 'none' : 'hidden'
-// }
-
-// function SetConsoleMessage(msg){
-//     const h3 = document.querySelector('main div.console h3')
-//     h3.innerText = msg
-// }
-
-RenderHeader()
-RenderBoard()
-SetNextPlayer()
-
-
-
 
 
 

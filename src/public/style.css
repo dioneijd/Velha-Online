@@ -17,7 +17,7 @@ body {
 
 header {
     width: 100%;
-    background-color: rgb(92, 43, 226);
+    background-color: rgb(75, 138, 197);;
     color: white;
 }
 header div {
@@ -52,7 +52,8 @@ main .board {
     grid-template-rows: 1fr 1fr 1fr;
     gap: 2px;
 
-    background-color:  rgb(92, 43, 226);    
+    background-color:  rgb(75, 138, 197);
+     
 }
 
 main .board .cell {
@@ -69,7 +70,7 @@ main .board .cell:hover {
 }
 
 main .board .cell.winnerSeq {
-    background-color: rgb(92, 43, 226);    
+    background-color: orange;
     color: white;
 }
 
@@ -77,7 +78,6 @@ main div.console{
     height: 50px;
     width: 100%;
     max-width: 700px;
-    margin-top: 20px;
     display: flex;
     flex-direction: row;
     justify-content: space-between;
@@ -90,7 +90,7 @@ main div.console button {
     cursor: pointer;
     border: 0;
     border-radius: 5px;
-    background-color: rgb(92, 43, 226);
+    background-color: rgb(75, 138, 197);
     color: white;
     font-size: 20px;
 }
