@@ -3,6 +3,7 @@ const socket = io()
 let players = []
 
 let myPlayer = {
+    socketId: '',
     id: '',
     name: ''
 }
@@ -10,20 +11,27 @@ let myPlayer = {
 RenderPlayerName()
 SetPlayerId()
 SetPlayerName()
-socket.on('connect', SetPlayerId)
+socket.on('connect', SetPlayerSocketId)
 
+
+function SetPlayerSocketId(){
+    myPlayer.socketId = socket.id
+    SetPlayerId()
+    StorePlayerDetails()
+}
 
 
 function SetPlayerId(){
+    myPlayer.socketId = socket.id
+
     if (myPlayer.id == '') {
         const oldPlayerId = sessionStorage.getItem('myPlayerId')
         
         myPlayer.id = oldPlayerId || socket.id || ''
         sessionStorage.setItem('myPlayerId', myPlayer.id)
+        
         RenderPlayerName()
     }
-    
-
 }
 
 function SetPlayerName(){
@@ -43,9 +51,8 @@ function SetPlayerName(){
 function RenderPlayerName(){
     const input = document.querySelector('#playerName')
 
-    if (myPlayer.id == ''){
+    if (myPlayer.id == '' && socket.id){
         input.disabled = true
-        // input.value = 'CARREGANDO ...'
     } else {
         input.disabled = false
         input.value = myPlayer.name
@@ -53,29 +60,17 @@ function RenderPlayerName(){
 }
 
 function StorePlayerDetails(){
-    const myPlayerId = sessionStorage.getItem('myPlayerId')
-    const myPlayerName =  document.querySelector('#playerName').value
-
-    if (myPlayerName != '' && myPlayerId != '') {
-        sessionStorage.setItem('myPlayerName', myPlayerName)        
-        const player = {
-            id: myPlayerId,
-            name: myPlayerName
-        }
-        
-        RenderPlayerName()        
-        socket.emit('storePlayer', player)
+    if (myPlayer.name != '' && myPlayer.id != '') {       
+        socket.emit('storePlayer', myPlayer)
     }
 }
 
-
 function RenderPlayersList(){
-    const myPlayerId = sessionStorage.getItem('myPlayerId')
     const ul = document.querySelector('#playersList')
     ul.innerHTML = ''
 
     players.forEach(function(player){
-        if (player.id != myPlayerId){
+        if (player.id != myPlayer.id && player.actived){
             ul.innerHTML += `<li onclick=StartChallenge('${player.id}')>${player.name}</li>`
         }
     })

@@ -15,7 +15,6 @@ const port = process.env.PORT || 3334
 console.log(path.join(__dirname, 'public', 'GameScreen'))
 
 app.use(express.static(path.join(__dirname, 'public')))
-//app.use('InitialScreen', express.static(path.join(__dirname, 'public', 'InitialScreen')))
 app.use(express.json())
 app.use(routes)
 
@@ -68,6 +67,10 @@ io.on('connection', (socket) => {
   })
 
   
+  socket.on('disconnect', () => {
+    playerController.MakeInactive(socket.id)
+    socket.broadcast.emit('updatedPlayers', playerController.players)
+  })
 
 
   socket.emit('testConnection', 'oi?')
