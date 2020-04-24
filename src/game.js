@@ -1,13 +1,13 @@
 let game = {
     players: [
         {
-            socketId: '',
+            id: '',
             name: 'dionei',
             score: 0,
             symbol: 'X',
         },
         {
-            socketId: '',
+            id: '',
             name: 'manu',
             score: 0,
             symbol: 'O',
@@ -33,6 +33,24 @@ const winSequence = [
     [0, 3, 6], [1, 4, 7], [2, 5, 8],
     [0, 4, 8], [2, 4, 6]
 ]
+
+
+function StorePlayer(newPlayer){
+    const playerId = game.players.findIndex(player => player.socketId == newPlayer.socketId)
+
+    if (playerId){
+
+        newPlayer = {
+            ...newPlayer, 
+            score: 0,
+            symbol: ''
+        }
+
+        game.players[playerId] = newPlayer
+    } else {
+        game.players.push(player)
+    }    
+}
 
 
 function StartNewGameTurn(){
@@ -89,14 +107,14 @@ function CheckGameTied(){
 
 
 function SetNextPlayer(){
-    const nextPlayerId = game.turnPlayer.id == 0 ? 1 : 0
-    const nextPlayer = game.players[nextPlayerId]
+    const nextPlayerSeq = game.turnPlayer.sequence == 0 ? 1 : 0
+    const nextPlayer = game.players[nextPlayerSeq]
 
-    game.turnPlayer = {id: nextPlayerId, ...nextPlayer} 
+    game.turnPlayer = {sequence: nextPlayerSeq, ...nextPlayer} 
 }
 
 function AddScore(){
-    const playerId = game.turnPlayer.id
+    const playerId = game.turnPlayer.sequence
     game.players[playerId].score ++    
 }
 
@@ -104,6 +122,7 @@ function AddScore(){
 
 module.exports = {
     game,
+    StorePlayer,
     StartNewGameTurn,
     MakeTurn
 }

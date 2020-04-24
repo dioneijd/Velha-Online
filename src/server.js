@@ -12,21 +12,41 @@ var path = require('path')
 const routes = require('./routes.js')
 const port = process.env.PORT || 3334
 
+console.log(path.join(__dirname, 'public', 'GameScreen'))
 
 app.use(express.static(path.join(__dirname, 'public')))
+//app.use('InitialScreen', express.static(path.join(__dirname, 'public', 'InitialScreen')))
 app.use(express.json())
 app.use(routes)
 
 
 const gameController = require('./game.js')
+const playerController = require('./player.js')
 
+
+let games = []
 
 io.on('connection', (socket) => {
   console.log('a user connected. ID:', socket.id)
 
-  // socket.emit('gameLoader', gameController.game)
+
   socket.emit('gameUpdated', gameController.game)
   socket.broadcast.emit('gameUpdated', gameController.game)
+
+
+
+  socket.on('storePlayer', (player) => {
+    playerController.StorePlayerDetails(player)
+
+    socket.emit('updatedPlayers', playerController.players)
+    socket.broadcast.emit('updatedPlayers', playerController.players)
+  })
+
+
+  socket.on('startNewChallenge', (gamePlayers) => {
+
+  })
+
 
 
   socket.on('startNewTurn', () => {
@@ -35,6 +55,7 @@ io.on('connection', (socket) => {
     socket.broadcast.emit('gameUpdated', gameController.game)
     
   })
+
 
 
   socket.on('turnMade', (data)=>{
@@ -46,14 +67,11 @@ io.on('connection', (socket) => {
     }
   })
 
-
+  
 
 
   socket.emit('testConnection', 'oi?')
   socket.on('teste', (msg)=>console.log(msg))
-
-
-  //socket.emit('console.log', ga)
 
 })
 
