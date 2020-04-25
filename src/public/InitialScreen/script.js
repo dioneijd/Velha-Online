@@ -71,18 +71,18 @@ function RenderPlayersList(){
 
     players.forEach(function(player){
         if (player.id != myPlayer.id && player.actived){
-            ul.innerHTML += `<li onclick=StartChallenge('${player.id}')>${player.name}</li>`
+            ul.innerHTML += `<li onclick=StartNewChallenge('${player.id}')>${player.name}</li>`
         }
     })
 }
 
-function StartChallenge(opponentId){
+function StartNewChallenge(opponentId){
     const gamePlayers = {
         player1: myPlayer.id,
         player2: opponentId
     }
 
-    socket.emit('startNewChallenge')
+    socket.emit('startNewChallenge', gamePlayers)
 }
 
 
@@ -91,4 +91,10 @@ socket.on('updatedPlayers', function (playersData) {
     players = playersData
 
     RenderPlayersList()
+})
+
+socket.on('newChallengeStarted', function (game) {
+    for (p in game.players) {
+        if (game.players[p].id == myPlayer.id) window.location.href += `${game.id}`
+    }
 })

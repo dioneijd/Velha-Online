@@ -1,4 +1,5 @@
-let game = {
+let data = {
+    id: '', 
     players: [
         {
             id: '',
@@ -24,7 +25,6 @@ let game = {
     gameOver: true,
     gameTied: false,
     winnerSequence: []
-
 }
 
 
@@ -36,7 +36,7 @@ const winSequence = [
 
 
 function StorePlayer(newPlayer){
-    const playerId = game.players.findIndex(player => player.socketId == newPlayer.socketId)
+    const playerId = data.players.findIndex(player => player.socketId == newPlayer.socketId)
 
     if (playerId){
 
@@ -46,33 +46,33 @@ function StorePlayer(newPlayer){
             symbol: ''
         }
 
-        game.players[playerId] = newPlayer
+        data.players[playerId] = newPlayer
     } else {
-        game.players.push(player)
+        data.players.push(player)
     }    
 }
 
 
 function StartNewGameTurn(){
-    game.board.fill('')
-    game.winnerSequence = []
-    game.numberOfTurns ++
-    game.gameOver = false
-    game.gameTied = false
+    data.board.fill('')
+    data.winnerSequence = []
+    data.numberOfTurns ++
+    data.gameOver = false
+    data.gameTied = false
     SetNextPlayer()
 }
 
 
 function MakeTurn(id){
-    if (game.board[id] == '' && !game.gameOver) {
+    if (data.board[id] == '' && !data.gameOver) {
         
-        const player = game.turnPlayer        
-        game.board[id] = player.symbol
+        const player = data.turnPlayer        
+        data.board[id] = player.symbol
 
         CheckWinningSeq()
         CheckGameTied()
         
-        if (!game.gameOver) {
+        if (!data.gameOver) {
             SetNextPlayer()
         }
     }
@@ -81,47 +81,47 @@ function MakeTurn(id){
 
 
 function CheckWinningSeq(){
-    const symbol = game.turnPlayer.symbol
+    const symbol = data.turnPlayer.symbol
    
     for (i in winSequence) {
         if (
-            game.board[winSequence[i][0]] == symbol &&
-            game.board[winSequence[i][1]] == symbol &&
-            game.board[winSequence[i][2]] == symbol
+            data.board[winSequence[i][0]] == symbol &&
+            data.board[winSequence[i][1]] == symbol &&
+            data.board[winSequence[i][2]] == symbol
         ){
-            game.gameOver = true
-            game.winnerSequence = winSequence[i]
+            data.gameOver = true
+            data.winnerSequence = winSequence[i]
             AddScore()
         }
     }
 }
 
 function CheckGameTied(){
-    const emptyCell = game.board.find(cell => cell == '')
+    const emptyCell = data.board.find(cell => cell == '')
 
     if (emptyCell != ''){
-        game.gameOver = true
-        game.gameTied = true
+        data.gameOver = true
+        data.gameTied = true
     }
 }
 
 
 function SetNextPlayer(){
-    const nextPlayerSeq = game.turnPlayer.sequence == 0 ? 1 : 0
-    const nextPlayer = game.players[nextPlayerSeq]
+    const nextPlayerSeq = data.turnPlayer.sequence == 0 ? 1 : 0
+    const nextPlayer = data.players[nextPlayerSeq]
 
-    game.turnPlayer = {sequence: nextPlayerSeq, ...nextPlayer} 
+    data.turnPlayer = {sequence: nextPlayerSeq, ...nextPlayer} 
 }
 
 function AddScore(){
-    const playerId = game.turnPlayer.sequence
-    game.players[playerId].score ++    
+    const playerId = data.turnPlayer.sequence
+    data.players[playerId].score ++    
 }
 
 
 
 module.exports = {
-    game,
+    data,
     StorePlayer,
     StartNewGameTurn,
     MakeTurn

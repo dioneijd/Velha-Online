@@ -1,80 +1,85 @@
 require('dotenv').config()
+const port = process.env.PORT || 3334
 
 var express = require('express')
 var app = express();
 var http = require('http').createServer(app);
 var io = require('socket.io')(http);
-
 var path = require('path')
 
-
-
 const routes = require('./routes.js')
-const port = process.env.PORT || 3334
-
-console.log(path.join(__dirname, 'public', 'GameScreen'))
 
 app.use(express.static(path.join(__dirname, 'public')))
 app.use(express.json())
 app.use(routes)
 
 
-const gameController = require('./game.js')
 const playerController = require('./player.js')
-
-
-let games = []
+const challengerController = require('./challanger.js')
 
 io.on('connection', (socket) => {
   console.log('a user connected. ID:', socket.id)
 
 
-  socket.emit('gameUpdated', gameController.game)
-  socket.broadcast.emit('gameUpdated', gameController.game)
 
-
-
-  socket.on('storePlayer', (player) => {
+  // INITIAL SCREEN
+  socket.on('storePlayer', player => {
     playerController.StorePlayerDetails(player)
 
     socket.emit('updatedPlayers', playerController.players)
     socket.broadcast.emit('updatedPlayers', playerController.players)
   })
 
+  socket.on('startNewChallenge', gamePlayers => {
+    challengerController.StartNewChallange(gamePlayers)
 
-  socket.on('startNewChallenge', (gamePlayers) => {
+    const game = challengerController.games[games.length-1]
 
-  })
-
-
-
-  socket.on('startNewTurn', () => {
-    gameController.StartNewGameTurn()
-    socket.emit('gameUpdated', gameController.game)
-    socket.broadcast.emit('gameUpdated', gameController.game)
-    
-  })
-
-
-
-  socket.on('turnMade', (data)=>{
-    if(data.cell_id >= 0){
-      gameController.MakeTurn(data.cell_id)
-    
-      socket.emit('gameUpdated', gameController.game)
-      socket.broadcast.emit('gameUpdated', gameController.game)      
-    }
-  })
-
-  
-  socket.on('disconnect', () => {
-    playerController.MakeInactive(socket.id)
+    socket.emit('newChallengeStarted', game.data)
+    socket.broadcast.emit('newChallengeStarted', game.data)
     socket.broadcast.emit('updatedPlayers', playerController.players)
   })
 
 
-  socket.emit('testConnection', 'oi?')
-  socket.on('teste', (msg)=>console.log(msg))
+  // GAME SCREEN
+  socket.on('requestGameData', (gameId) => {
+    const game = challengerController.GetGameById(gameId)
+
+    if(game){
+      socket.emit('gameDataUpdated', game.data)
+    }
+  })
+
+  socket.on('startNewTurn', (gameId) => {
+    const game = challengerController.GetGameById(gameId)
+    
+    if (game){
+      game.StartNewGameTurn()
+  
+      socket.emit('gameDataUpdated', game.data)
+      socket.broadcast.emit('gameDataUpdated', game.data)    
+    }
+  })
+
+  socket.on('makeTurn', (data) => {
+    if(data.cell_id >= 0){
+      const game = challengerController.GetGameById(data.gameId)
+
+      if (game){
+        game.MakeTurn(data.cell_id)
+      
+        socket.emit('gameDataUpdated', game.data)
+        socket.broadcast.emit('gameDataUpdated', game.data)      
+      }
+    }
+  })
+
+
+  // OTHERS
+  socket.on('disconnect', () => {
+    playerController.MakeInactive(socket.id)
+    socket.broadcast.emit('updatedPlayers', playerController.players)
+  })
 
 })
 

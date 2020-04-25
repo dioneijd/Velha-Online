@@ -2,6 +2,7 @@ const socket = io()
 
 let game = {}
 
+const gameId = window.location.pathname.slice(1)
 
 function RenderHeader(){
     const player1 = document.querySelector('#player1')
@@ -15,8 +16,6 @@ function RenderHeader(){
     score2.innerText = game.players[1].score    
 }
 
-
-
 function RenderBoard(){
     let content = '';
     const board = document.querySelector('main .board')
@@ -29,7 +28,7 @@ function RenderBoard(){
     }
 }
 
-function RenderWinnerSeq(seqId){
+function RenderWinnerSeq(){
     const winSeq = game.winnerSequence
 
     winSeq.forEach((cell) => {
@@ -42,8 +41,6 @@ function RenderConsoleButton(){
     const btn = document.querySelector('#btnStartTurn')
     btn.style.visibility = game.gameOver ? '' : 'hidden'
 }
-
-
 
 function RenderConsoleMessage(){
     const h3 = document.querySelector('main div.console h3')
@@ -64,39 +61,33 @@ function RenderConsoleMessage(){
 
 
 function MakeTurn(cell_id){
-    socket.emit('turnMade', {cell_id} )
+    socket.emit('makeTurn', {gameId, cell_id} )
 }
 
 function StartTurn(){
-    socket.emit('startNewTurn', true)
+    socket.emit('startNewTurn', gameId)
 }
 
 
-socket.on('gameUpdated', function(gameData){    
-    game = gameData    
-    RenderHeader()
-    RenderBoard()
-    RenderConsoleButton()
-    RenderConsoleMessage()
-
-    if (game.winnerSequence != '') RenderWinnerSeq()
-
-
-
-
+socket.on('connect', function(){
+    socket.emit('requestGameData', gameId)
 })
 
 
-
-
-
-socket.on('testConnection', function(data){
-    console.log('TEST CONNECTION. Message received:', data )
+socket.on('gameDataUpdated', function(gameData){
+    if (gameData.id == gameId){
+        game = gameData    
+        RenderHeader()
+        RenderBoard()
+        RenderConsoleButton()
+        RenderConsoleMessage()
+    
+        if (game.winnerSequence != '') RenderWinnerSeq()
+    } else {
+        console.log(`socket: gameUpdated - Game id is not equal`)
+    }
 })
 
-socket.on('console.log', function(data){
-    console.log(data)
-})
 
 
 
